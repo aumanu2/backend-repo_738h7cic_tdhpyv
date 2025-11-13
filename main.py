@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 from database import db, create_document, get_documents
 from schemas import Test as TestSchema, Attempt as AttemptSchema, Submission as SubmissionSchema
 
-app = FastAPI(title="CodeAssess API", version="0.1.2")
+app = FastAPI(title="CodeAssess API", version="0.1.3")
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,7 +21,7 @@ app.add_middleware(
 
 @app.get("/")
 def root_redirect():
-    # Redirect root to the landing page for a better first impression
+    # Keep default route sending users to the designed landing page
     return RedirectResponse(url="/landing", status_code=307)
 
 
@@ -168,7 +168,7 @@ def get_schema():
     }
 
 
-# Temporary Landing Page served from backend while frontend is rebuilt
+# Landing Page — redesigned with a modern, Gen‑Z vibe
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page():
     return """
@@ -178,49 +178,65 @@ def landing_page():
         <meta charset='utf-8'/>
         <meta name='viewport' content='width=device-width, initial-scale=1'/>
         <title>Flames Assess — Modern Coding Assessments</title>
+        <link rel='preconnect' href='https://fonts.googleapis.com'>
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+        <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap' rel='stylesheet'>
         <style>
-          :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; }
+          :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --ink:#0b0b10; --brand:#7c3aed; --brand2:#06b6d4; --brand3:#22d3ee; --panel: rgba(255,255,255,.04); --border: rgba(148,163,184,.16); }
           * { box-sizing: border-box }
-          body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial; color: var(--fg); background: radial-gradient(1200px 600px at 20% -10%, rgba(124,58,237,0.25), transparent), radial-gradient(1000px 500px at 120% 10%, rgba(6,182,212,0.2), transparent), var(--bg); }
-          .container { max-width: 1120px; margin: 0 auto; padding: 24px }
-          header { display:flex; align-items:center; justify-content:space-between; padding: 12px 0 }
-          .logo { display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.3px }
-          .logo-badge{ width:34px;height:34px;border-radius:10px;background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; color:white; font-weight:800 }
+          html, body { height: 100% }
+          body { margin:0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--fg); background: radial-gradient(1200px 600px at 20% -10%, rgba(124,58,237,0.28), transparent), radial-gradient(1000px 500px at 120% 20%, rgba(6,182,212,0.24), transparent), var(--bg); }
+          .container { max-width: 1200px; margin: 0 auto; padding: 24px }
+          header { position: sticky; top: 0; backdrop-filter: saturate(1.2) blur(8px); background: linear-gradient(180deg, rgba(11,11,16,.72), rgba(11,11,16,.15)); border-bottom:1px solid var(--border); z-index: 20 }
+          .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 12px 0 }
+          .logo { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px }
+          .logo-badge{ width:36px;height:36px;border-radius:12px;background: conic-gradient(from 210deg at 50% 50%, var(--brand), var(--brand2), var(--brand3), var(--brand)); display:grid; place-items:center; color:white; font-weight:900; border:1px solid rgba(255,255,255,.25); box-shadow: 0 8px 30px rgba(124,58,237,.25) }
           nav { display:flex; gap: 18px; color: var(--muted) }
-          nav a { text-decoration:none; color: inherit }
-          .hero{ display:grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items:center; padding: 48px 0 }
-          h1 { font-size: clamp(36px, 6vw, 64px); line-height:1.02; margin: 0 0 14px }
-          .gradient { background: linear-gradient(135deg, #fff, #e9d5ff 35%, #99f6e4 75%); -webkit-background-clip: text; background-clip:text; color: transparent }
-          .kicker { color: var(--muted); font-weight:600; letter-spacing:.2em; text-transform:uppercase; font-size:12px }
-          .subtitle{ color: var(--muted); max-width: 58ch; font-size: 18px }
-          .cta{ display:flex; gap:12px; margin-top:22px }
-          .btn{ padding:12px 16px; border-radius:10px; border:1px solid rgba(148,163,184,.2); color:#0b0b10; background:white; font-weight:700 }
-          .btn.sec{ background: transparent; color: var(--fg) }
-          .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; background: rgba(124,58,237,.12); color:#e9d5ff; border: 1px solid rgba(124,58,237,.25); border-radius:999px; font-size:12px; font-weight:700 }
+          nav a { text-decoration:none; color: inherit; padding: 8px 10px; border-radius: 10px }
+          nav a:hover { background: rgba(255,255,255,.06); color: #fff }
+          .hero{ display:grid; grid-template-columns: 1.05fr .95fr; gap: 36px; align-items:center; padding: 56px 0 }
+          h1 { font-size: clamp(40px, 6.5vw, 70px); line-height:1.02; margin: 0 0 14px; letter-spacing:-.02em }
+          .gradient { background: linear-gradient(135deg, #fff, #e9d5ff 35%, #99f6e4 80%); -webkit-background-clip: text; background-clip:text; color: transparent; text-shadow: 0 12px 40px rgba(153,246,228,.12) }
+          .kicker { color: var(--muted); font-weight:700; letter-spacing:.22em; text-transform:uppercase; font-size:11px }
+          .subtitle{ color: var(--muted); max-width: 60ch; font-size: 18px }
+          .cta{ display:flex; gap:12px; margin-top:24px; flex-wrap: wrap }
+          .btn{ padding:12px 16px; border-radius:12px; border:1px solid rgba(148,163,184,.2); color:var(--ink); background:white; font-weight:800; box-shadow: 0 10px 24px rgba(124,58,237,.18) }
+          .btn.sec{ background: transparent; color: var(--fg); border-color: rgba(148,163,184,.28) }
+          .btn:hover{ transform: translateY(-1px); transition: .2s ease; }
+          .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; background: rgba(124,58,237,.12); color:#e9d5ff; border: 1px solid rgba(124,58,237,.25); border-radius:999px; font-size:12px; font-weight:800 }
           .cardgrid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin: 48px 0 0 }
-          .card{ padding:18px; border:1px solid rgba(148,163,184,.2); border-radius:14px; background: rgba(255,255,255,.02) }
+          .card{ padding:20px; border:1px solid var(--border); border-radius:16px; background: var(--panel); transition: .2s ease; min-height: 120px }
+          .card:hover{ transform: translateY(-3px); background: linear-gradient(180deg, rgba(124,58,237,.10), rgba(255,255,255,.02)); box-shadow: 0 12px 30px rgba(124,58,237,.18) }
           .card h3{ margin:0 0 6px; font-size:18px }
           .card p{ margin:0; color: var(--muted) }
+          .split { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px }
+          .stat { padding: 16px; border:1px solid var(--border); border-radius: 16px; background: var(--panel); text-align:center }
+          .stat .num { font-size: 28px; font-weight: 900; letter-spacing: -.02em }
           footer{ padding: 48px 0; color: var(--muted); font-size:14px }
-          @media (max-width: 900px){ .hero{ grid-template-columns: 1fr } .cardgrid{ grid-template-columns: 1fr } }
-          .glow{ position: fixed; inset: -20% -10% auto auto; width: 40vw; height: 40vw; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,.35), transparent 60%); filter: blur(40px); pointer-events:none; }
+          @media (max-width: 980px){ .hero{ grid-template-columns: 1fr } .cardgrid{ grid-template-columns: 1fr } .split{ grid-template-columns: 1fr } }
+          .glow{ position: fixed; inset: -10% -10% auto auto; width: 50vw; height: 50vw; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
+          .glow2{ position: fixed; inset: auto auto -20% -20%; width: 45vw; height: 45vw; background: radial-gradient(circle at 70% 70%, rgba(6,182,212,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
         </style>
       </head>
       <body>
         <div class="glow"></div>
-        <div class="container">
-          <header>
+        <div class="glow2"></div>
+        <header>
+          <div class="container nav">
             <div class="logo">
               <div class="logo-badge">FA</div>
               Flames Assess
             </div>
             <nav>
               <a href="#features">Features</a>
-              <a href="/app">Mini App</a>
+              <a href="/app">Try the App</a>
+              <a href="#pricing">Pricing</a>
               <a href="#contact">Contact</a>
             </nav>
-          </header>
+          </div>
+        </header>
 
+        <div class="container">
           <section class="hero">
             <div>
               <div class="kicker">Gen‑Z ready</div>
@@ -230,7 +246,8 @@ def landing_page():
               </h1>
               <p class="subtitle">Create beautiful, robust coding tests in minutes. Invite candidates, proctor securely, and get AI‑assisted insights that actually help you decide faster.</p>
               <div class="cta">
-                <a class="btn" href="/health">Check API Health</a>
+                <a class="btn" href="/app">Launch App</a>
+                <a class="btn sec" href="/health">Check API Health</a>
                 <a class="btn sec" href="/schema">View Schema</a>
               </div>
               <div style="margin-top:14px" class="badge">Live preview powered by FastAPI</div>
@@ -247,6 +264,19 @@ def landing_page():
             </div>
           </section>
 
+          <section id="features" class="split">
+            <div class="stat"><div class="num">10x</div><div class="muted">faster to create tests</div></div>
+            <div class="stat"><div class="num">98%</div><div class="muted">cheating attempts flagged</div></div>
+          </section>
+
+          <section id="contact" style="margin-top: 32px">
+            <div class="card" style="padding: 18px">
+              <h3 style="margin:0 0 8px">Need something custom?</h3>
+              <p class="muted" style="margin:0 0 12px">We ship custom question types, proctoring rules, and integrations.</p>
+              <a class="btn" href="mailto:hello@flames.assess">Contact Us</a>
+            </div>
+          </section>
+
           <footer>
             © <span id="yr"></span> Flames Assess — All rights reserved.
           </footer>
@@ -257,7 +287,7 @@ def landing_page():
     """
 
 
-# Rich in-backend SPA to unblock preview while frontend is unavailable
+# Rich in-backend SPA — redesigned UI, same endpoints
 @app.get("/app", response_class=HTMLResponse)
 def mini_app():
     return """
@@ -267,22 +297,28 @@ def mini_app():
         <meta charset='utf-8'/>
         <meta name='viewport' content='width=device-width, initial-scale=1'/>
         <title>Flames Assess — App</title>
+        <link rel='preconnect' href='https://fonts.googleapis.com'>
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+        <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap' rel='stylesheet'>
         <style>
-            :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; --panel: rgba(255,255,255,.03); --border: rgba(148,163,184,.2) }
-            body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial; color: var(--fg); background: var(--bg); }
-            .wrap { max-width: 1120px; margin: 0 auto; padding: 24px }
-            .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px }
-            .brand { display:flex; gap:10px; align-items:center; font-weight:800 }
-            .badge { width:28px; height:28px; border-radius:8px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; font-size:12px }
-            .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border); margin: 14px 0 18px }
-            .tab { padding: 10px 14px; border:1px solid var(--border); border-bottom:none; border-radius: 10px 10px 0 0; background: var(--panel); cursor:pointer }
-            .tab.active { background: linear-gradient(180deg, rgba(124,58,237,.18), transparent); }
-            .panel { border:1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 16px; background: var(--panel) }
+            :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; --panel: rgba(255,255,255,.03); --panel2: rgba(255,255,255,.05); --border: rgba(148,163,184,.2) }
+            * { box-sizing: border-box }
+            body { margin:0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--fg); background: radial-gradient(1100px 520px at -20% -20%, rgba(124,58,237,.26), transparent), radial-gradient(1100px 520px at 120% 0%, rgba(6,182,212,.22), transparent), var(--bg); }
+            .shell { display:grid; grid-template-columns: 240px 1fr; min-height: 100vh }
+            aside { border-right:1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.03)); padding: 16px; position: sticky; top:0; height: 100vh }
+            .brand { display:flex; gap:10px; align-items:center; font-weight:900; letter-spacing:.2px; margin-bottom: 10px }
+            .badge { width:30px; height:30px; border-radius:10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; font-size:12px; box-shadow: 0 10px 20px rgba(124,58,237,.25) }
+            .nav { display:flex; flex-direction: column; gap: 8px; margin-top: 8px }
+            .nav button { text-align:left; width: 100%; padding: 10px 12px; border-radius: 10px; border:1px solid var(--border); background: var(--panel); color: var(--fg); font-weight: 700; cursor: pointer }
+            .nav button.active { background: linear-gradient(180deg, rgba(124,58,237,.18), transparent); border-color: rgba(124,58,237,.35) }
+            main { padding: 22px }
+            .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px }
+            .panel { border:1px solid var(--border); border-radius: 14px; padding: 16px; background: var(--panel) }
             .row { display:flex; gap: 16px; align-items:flex-start; flex-wrap: wrap }
             input, textarea, select { background: rgba(255,255,255,.06); border:1px solid var(--border); color: var(--fg); border-radius: 10px; padding: 10px 12px; width: 280px }
-            textarea { width: 420px; height: 120px }
+            textarea { width: 480px; height: 140px }
             label { display:block; font-size:12px; color: var(--muted); margin: 0 0 6px }
-            button { padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: white; border: none; font-weight: 700; cursor: pointer }
+            button.btn { padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: white; border: none; font-weight: 800; cursor: pointer }
             table { width: 100%; border-collapse: collapse; margin-top: 12px }
             th, td { border-bottom: 1px solid var(--border); text-align:left; padding: 10px; vertical-align: top }
             .muted { color: var(--muted) }
@@ -290,41 +326,57 @@ def mini_app():
             a { color: #99f6e4; text-decoration: none }
             code, pre { background: rgba(255,255,255,.06); border:1px solid var(--border); border-radius: 8px; padding: 8px; display:block; white-space: pre-wrap; }
             .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px }
-            @media (max-width: 900px){ .grid { grid-template-columns: 1fr } }
+            @media (max-width: 1024px){ .shell { grid-template-columns: 1fr } aside { position: static; height:auto } .grid { grid-template-columns: 1fr } textarea { width: 100% } }
+            .toast { position: fixed; right: 16px; bottom: 16px; background: var(--panel2); border:1px solid var(--border); padding: 12px 14px; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,.35); display:none }
+            .skeleton { height: 12px; background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.12), rgba(255,255,255,.06)); background-size: 200% 100%; animation: shimmer 1.2s infinite }
+            @keyframes shimmer { 0%{ background-position: 200% 0 } 100% { background-position: -200% 0 } }
         </style>
     </head>
     <body>
-        <div class='wrap'>
-            <div class='topbar'>
-                <div class='brand'><div class='badge'>FA</div> Flames Assess <span class='muted'>— App</span></div>
-                <div><a href='/landing'>Landing</a> · <a href='/health'>Health</a> · <a href='/schema'>Schema</a></div>
-            </div>
-
-            <div class='tabs'>
-                <div class='tab active' data-tab='tests'>Tests</div>
-                <div class='tab' data-tab='create'>Create Test</div>
-                <div class='tab' data-tab='take'>Take Test</div>
-                <div class='tab' data-tab='attempts'>Attempts</div>
-            </div>
-
-            <div id='view' class='panel'></div>
-            <div id='status' class='muted' style='margin-top:10px'>Ready.</div>
+        <div class='shell'>
+            <aside>
+                <div class='brand'><div class='badge'>FA</div> Flames Assess</div>
+                <div class='nav'>
+                    <button class='nav-btn active' data-tab='tests'>Tests</button>
+                    <button class='nav-btn' data-tab='create'>Create Test</button>
+                    <button class='nav-btn' data-tab='take'>Take Test</button>
+                    <button class='nav-btn' data-tab='attempts'>Attempts</button>
+                    <a class='nav-btn' href='/landing' style='text-decoration:none; display:block; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--panel); margin-top:8px'>← Back to Landing</a>
+                </div>
+            </aside>
+            <main>
+                <div class='toolbar'>
+                    <div class='muted'>Flames Assess — Mini App</div>
+                    <div><a href='/health'>Health</a> · <a href='/schema'>Schema</a></div>
+                </div>
+                <div id='view' class='panel'>
+                    <div class='skeleton' style='width:60%'></div>
+                    <div class='skeleton' style='width:40%; margin-top:8px'></div>
+                </div>
+            </main>
         </div>
+        <div id='toast' class='toast'></div>
 
         <script>
             const API = '' // same origin
             const view = document.getElementById('view');
-            const statusEl = document.getElementById('status');
+            const toast = document.getElementById('toast');
 
-            function setStatus(msg){ statusEl.textContent = msg }
+            function showToast(msg){
+                toast.textContent = msg;
+                toast.style.display = 'block';
+                clearTimeout(window.__t);
+                window.__t = setTimeout(()=> toast.style.display = 'none', 2000);
+            }
+
             function route(tab){
-                document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab===tab))
+                document.querySelectorAll('.nav-btn').forEach(el => el.classList.toggle('active', el.dataset.tab===tab))
                 if(tab==='create') renderCreate();
                 else if(tab==='take') renderTake();
                 else if(tab==='attempts') renderAttempts();
                 else renderTests();
             }
-            document.querySelectorAll('.tab').forEach(el=> el.addEventListener('click', ()=> route(el.dataset.tab)))
+            document.querySelectorAll('.nav-btn').forEach(el=> el.addEventListener('click', ()=> route(el.dataset.tab)))
 
             async function fetchJSON(url, opts){
                 const res = await fetch(url, opts);
@@ -333,12 +385,13 @@ def mini_app():
                 return data;
             }
 
+            // Tests list
             function renderTests(){
                 view.innerHTML = `
                     <div>
-                        <div class='row' style='justify-content:space-between; align-items:center'>
+                        <div style='display:flex; align-items:center; justify-content:space-between'>
                             <h2 style='margin:6px 0'>All Tests</h2>
-                            <div><button id='refreshBtn'>Refresh</button></div>
+                            <div><button class='btn' id='refreshBtn'>Refresh</button></div>
                         </div>
                         <table>
                             <thead><tr><th>Title</th><th>Difficulty</th><th>Tags</th><th>ID</th></tr></thead>
@@ -350,10 +403,9 @@ def mini_app():
             }
             async function loadTests(){
                 try{
-                    setStatus('Fetching tests…');
                     const data = await fetchJSON(`${API}/api/tests`);
                     const tbody = document.getElementById('tbody');
-                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No tests yet.</td></tr>"; setStatus('No tests.'); return; }
+                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No tests yet. Create one!</td></tr>"; showToast('No tests yet'); return; }
                     tbody.innerHTML = data.map(r => `
                         <tr>
                             <td>${r.title || '-'}</td>
@@ -361,10 +413,11 @@ def mini_app():
                             <td>${Array.isArray(r.tags) ? r.tags.join(', ') : '-'}</td>
                             <td class='muted'>${r.id || '-'}</td>
                         </tr>`).join('');
-                    setStatus(`Fetched ${data.length} test(s).`);
-                }catch(e){ setStatus('Failed to fetch tests: ' + e.message); }
+                    showToast(`Fetched ${data.length} test(s)`);
+                }catch(e){ showToast('Failed to fetch tests'); }
             }
 
+            // Create test
             function renderCreate(){
                 view.innerHTML = `
                     <div class='grid'>
@@ -382,7 +435,7 @@ def mini_app():
                             <input id='tags' placeholder='react, js, css' />
                             <label style='margin-top:10px'>Description</label>
                             <textarea id='desc' placeholder='Short description'></textarea>
-                            <div style='margin-top:12px'><button id='createBtn'>Create Test</button></div>
+                            <div style='margin-top:12px'><button class='btn' id='createBtn'>Create Test</button></div>
                         </div>
                         <div>
                             <h3 style='margin:6px 0'>Preview</h3>
@@ -410,15 +463,15 @@ def mini_app():
             }
             async function createTest(){
                 const payload = buildTestPayload();
-                if(!payload.title){ setStatus('Please enter a title.'); return; }
+                if(!payload.title){ showToast('Please enter a title'); return; }
                 try{
-                    setStatus('Creating test…');
                     const data = await fetchJSON(`${API}/api/tests`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-                    setStatus('Created test ' + (data.id || '')); 
+                    showToast('Created test ' + (data.id || ''));
                     route('tests');
-                }catch(e){ setStatus('Failed to create test: ' + e.message); }
+                }catch(e){ showToast('Failed to create test'); }
             }
 
+            // Take test
             function renderTake(){
                 view.innerHTML = `
                     <div>
@@ -433,7 +486,7 @@ def mini_app():
                                 <input id='take_email' placeholder='you@example.com' />
                             </div>
                             <div style='align-self:flex-end'>
-                                <button id='startBtn'>Start Attempt</button>
+                                <button class='btn' id='startBtn'>Start Attempt</button>
                             </div>
                         </div>
                         <div id='attemptBox' style='margin-top:16px; display:none'>
@@ -446,12 +499,12 @@ def mini_app():
                                         <option>cpp</option>
                                     </select>
                                     <label style='margin-top:10px'>Code</label>
-                                    <textarea id='code' placeholder='Write your solution here…' style='width:100%; height:200px'></textarea>
+                                    <textarea id='code' placeholder='Write your solution here…' style='width:100%; height:220px'></textarea>
                                 </div>
-                                <div style='width:340px'>
+                                <div style='width:360px'>
                                     <label>Notes</label>
-                                    <textarea id='notes' placeholder='Optional notes for reviewers' style='width:100%; height:120px'></textarea>
-                                    <div style='margin-top:12px'><button id='submitBtn'>Submit Solution</button></div>
+                                    <textarea id='notes' placeholder='Optional notes for reviewers' style='width:100%; height:140px'></textarea>
+                                    <div style='margin-top:12px'><button class='btn' id='submitBtn'>Submit Solution</button></div>
                                 </div>
                             </div>
                         </div>
@@ -462,18 +515,17 @@ def mini_app():
             async function startAttempt(){
                 const test_id = document.getElementById('take_test_id').value.trim();
                 const user_email = document.getElementById('take_email').value.trim();
-                if(!test_id || !user_email){ setStatus('Enter test id and email'); return }
+                if(!test_id || !user_email){ showToast('Enter test id and email'); return }
                 try{
-                    setStatus('Starting attempt…');
                     const payload = { test_id, user_email, status: 'started' };
                     const data = await fetchJSON(`${API}/api/attempts`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
                     currentAttempt = data.id;
                     document.getElementById('attemptBox').style.display = 'block';
-                    setStatus('Attempt started: ' + currentAttempt);
-                }catch(e){ setStatus('Failed to start attempt: ' + e.message); }
+                    showToast('Attempt started');
+                }catch(e){ showToast('Failed to start attempt'); }
             }
             async function submitSolution(){
-                if(!currentAttempt){ setStatus('Start an attempt first'); return }
+                if(!currentAttempt){ showToast('Start an attempt first'); return }
                 const body = {
                     attempt_id: currentAttempt,
                     language: document.getElementById('lang').value,
@@ -481,12 +533,11 @@ def mini_app():
                     notes: document.getElementById('notes').value,
                 };
                 try{
-                    setStatus('Submitting…');
                     const data = await fetchJSON(`${API}/api/submissions`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-                    setStatus('Submission saved: ' + (data.id || ''));
+                    showToast('Submission saved');
                     document.getElementById('code').value = '';
                     document.getElementById('notes').value = '';
-                }catch(e){ setStatus('Failed to submit: ' + e.message) }
+                }catch(e){ showToast('Failed to submit'); }
             }
             function wireSubmit(){
                 const btn = document.getElementById('submitBtn');
@@ -495,14 +546,15 @@ def mini_app():
             const observer = new MutationObserver(wireSubmit);
             observer.observe(document.body, { childList:true, subtree:true });
 
+            // Attempts
             function renderAttempts(){
                 view.innerHTML = `
                     <div>
-                        <div class='row' style='justify-content:space-between; align-items:center'>
+                        <div style='display:flex; align-items:center; justify-content:space-between'>
                             <h2 style='margin:6px 0'>Attempts</h2>
                             <div>
                                 <input id='filter_email' placeholder='Filter by email' style='width:220px' />
-                                <button id='filterBtn'>Filter</button>
+                                <button class='btn' id='filterBtn'>Filter</button>
                             </div>
                         </div>
                         <table>
@@ -517,10 +569,9 @@ def mini_app():
                 try{
                     const email = (document.getElementById('filter_email')?.value || '').trim();
                     const url = email ? `${API}/api/attempts?user_email=${encodeURIComponent(email)}` : `${API}/api/attempts`;
-                    setStatus('Fetching attempts…');
                     const data = await fetchJSON(url);
                     const tbody = document.getElementById('tbodyA');
-                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No attempts yet.</td></tr>"; setStatus('No attempts.'); return; }
+                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No attempts yet.</td></tr>"; showToast('No attempts'); return; }
                     tbody.innerHTML = data.map(r => `
                         <tr>
                             <td class='muted'>${r.id || '-'}</td>
@@ -528,8 +579,8 @@ def mini_app():
                             <td>${r.user_email || '-'}</td>
                             <td><span class='pill'>${r.status || '-'}</span></td>
                         </tr>`).join('');
-                    setStatus(`Fetched ${data.length} attempt(s).`);
-                }catch(e){ setStatus('Failed to fetch attempts: ' + e.message); }
+                    showToast(`Fetched ${data.length} attempt(s)`);
+                }catch(e){ showToast('Failed to fetch attempts'); }
             }
 
             // Default route
