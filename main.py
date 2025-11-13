@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 from database import db, create_document, get_documents
 from schemas import Test as TestSchema, Attempt as AttemptSchema, Submission as SubmissionSchema
 
-app = FastAPI(title="CodeAssess API", version="0.1.1")
+app = FastAPI(title="CodeAssess API", version="0.1.2")
 
 app.add_middleware(
     CORSMiddleware,
@@ -257,7 +257,7 @@ def landing_page():
     """
 
 
-# Minimal in-backend SPA to unblock preview while frontend is unavailable
+# Rich in-backend SPA to unblock preview while frontend is unavailable
 @app.get("/app", response_class=HTMLResponse)
 def mini_app():
     return """
@@ -266,148 +266,274 @@ def mini_app():
     <head>
         <meta charset='utf-8'/>
         <meta name='viewport' content='width=device-width, initial-scale=1'/>
-        <title>Flames Assess — Mini App</title>
+        <title>Flames Assess — App</title>
         <style>
-            :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; }
-            body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial; color: var(--fg); background: #0b0b10; }
-            .wrap { max-width: 1040px; margin: 0 auto; padding: 24px }
-            h1 { font-size: 28px; margin: 10px 0 22px }
-            .row { display:flex; gap: 16px; align-items:flex-end; flex-wrap: wrap }
-            input, textarea { background: rgba(255,255,255,.06); border:1px solid rgba(148,163,184,.25); color: var(--fg); border-radius: 10px; padding: 10px 12px; width: 280px }
-            textarea { width: 420px; height: 90px }
+            :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; --panel: rgba(255,255,255,.03); --border: rgba(148,163,184,.2) }
+            body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial; color: var(--fg); background: var(--bg); }
+            .wrap { max-width: 1120px; margin: 0 auto; padding: 24px }
+            .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px }
+            .brand { display:flex; gap:10px; align-items:center; font-weight:800 }
+            .badge { width:28px; height:28px; border-radius:8px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; font-size:12px }
+            .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border); margin: 14px 0 18px }
+            .tab { padding: 10px 14px; border:1px solid var(--border); border-bottom:none; border-radius: 10px 10px 0 0; background: var(--panel); cursor:pointer }
+            .tab.active { background: linear-gradient(180deg, rgba(124,58,237,.18), transparent); }
+            .panel { border:1px solid var(--border); border-radius: 0 10px 10px 10px; padding: 16px; background: var(--panel) }
+            .row { display:flex; gap: 16px; align-items:flex-start; flex-wrap: wrap }
+            input, textarea, select { background: rgba(255,255,255,.06); border:1px solid var(--border); color: var(--fg); border-radius: 10px; padding: 10px 12px; width: 280px }
+            textarea { width: 420px; height: 120px }
             label { display:block; font-size:12px; color: var(--muted); margin: 0 0 6px }
             button { padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: white; border: none; font-weight: 700; cursor: pointer }
-            table { width: 100%; border-collapse: collapse; margin-top: 18px }
-            th, td { border-bottom: 1px solid rgba(148,163,184,.2); text-align:left; padding: 10px }
+            table { width: 100%; border-collapse: collapse; margin-top: 12px }
+            th, td { border-bottom: 1px solid var(--border); text-align:left; padding: 10px; vertical-align: top }
             .muted { color: var(--muted) }
             .pill { display:inline-block; padding: 3px 8px; font-size: 12px; border-radius: 999px; background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
-            .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px }
             a { color: #99f6e4; text-decoration: none }
+            code, pre { background: rgba(255,255,255,.06); border:1px solid var(--border); border-radius: 8px; padding: 8px; display:block; white-space: pre-wrap; }
+            .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px }
+            @media (max-width: 900px){ .grid { grid-template-columns: 1fr } }
         </style>
     </head>
     <body>
         <div class='wrap'>
             <div class='topbar'>
-                <div><strong>Flames Assess</strong> <span class='muted'>— Mini App</span></div>
+                <div class='brand'><div class='badge'>FA</div> Flames Assess <span class='muted'>— App</span></div>
                 <div><a href='/landing'>Landing</a> · <a href='/health'>Health</a> · <a href='/schema'>Schema</a></div>
             </div>
 
-            <h1>Tests</h1>
-            <div class='row'>
-                <div>
-                    <label>Title</label>
-                    <input id='title' placeholder='e.g., Frontend Basics' />
-                </div>
-                <div>
-                    <label>Difficulty</label>
-                    <input id='difficulty' placeholder='easy | medium | hard' />
-                </div>
-                <div>
-                    <label>Tags (comma separated)</label>
-                    <input id='tags' placeholder='react, js, css' />
-                </div>
-            </div>
-            <div style='margin-top:12px' class='row'>
-                <div>
-                    <label>Description</label>
-                    <textarea id='desc' placeholder='Short description'></textarea>
-                </div>
-                <div>
-                    <button id='createBtn'>Create Test</button>
-                </div>
+            <div class='tabs'>
+                <div class='tab active' data-tab='tests'>Tests</div>
+                <div class='tab' data-tab='create'>Create Test</div>
+                <div class='tab' data-tab='take'>Take Test</div>
+                <div class='tab' data-tab='attempts'>Attempts</div>
             </div>
 
-            <div id='status' class='muted' style='margin:12px 0'>Ready.</div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Difficulty</th>
-                        <th>Tags</th>
-                        <th>ID</th>
-                    </tr>
-                </thead>
-                <tbody id='tbody'>
-                    <tr><td colspan='4' class='muted'>Loading…</td></tr>
-                </tbody>
-            </table>
+            <div id='view' class='panel'></div>
+            <div id='status' class='muted' style='margin-top:10px'>Ready.</div>
         </div>
 
         <script>
-            const tbody = document.getElementById('tbody');
+            const API = '' // same origin
+            const view = document.getElementById('view');
             const statusEl = document.getElementById('status');
 
-            function setStatus(msg){ statusEl.textContent = msg; }
+            function setStatus(msg){ statusEl.textContent = msg }
+            function route(tab){
+                document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab===tab))
+                if(tab==='create') renderCreate();
+                else if(tab==='take') renderTake();
+                else if(tab==='attempts') renderAttempts();
+                else renderTests();
+            }
+            document.querySelectorAll('.tab').forEach(el=> el.addEventListener('click', ()=> route(el.dataset.tab)))
 
-            async function fetchTests(){
+            async function fetchJSON(url, opts){
+                const res = await fetch(url, opts);
+                const data = await res.json().catch(()=> ({}));
+                if(!res.ok) throw new Error(data.detail || JSON.stringify(data));
+                return data;
+            }
+
+            function renderTests(){
+                view.innerHTML = `
+                    <div>
+                        <div class='row' style='justify-content:space-between; align-items:center'>
+                            <h2 style='margin:6px 0'>All Tests</h2>
+                            <div><button id='refreshBtn'>Refresh</button></div>
+                        </div>
+                        <table>
+                            <thead><tr><th>Title</th><th>Difficulty</th><th>Tags</th><th>ID</th></tr></thead>
+                            <tbody id='tbody'><tr><td colspan='4' class='muted'>Loading…</td></tr></tbody>
+                        </table>
+                    </div>`;
+                document.getElementById('refreshBtn').addEventListener('click', loadTests);
+                loadTests();
+            }
+            async function loadTests(){
                 try{
                     setStatus('Fetching tests…');
-                    const res = await fetch('/api/tests');
-                    const data = await res.json();
-                    renderRows(Array.isArray(data) ? data : []);
-                    setStatus('Fetched ' + (Array.isArray(data) ? data.length : 0) + ' test(s).');
-                }catch(e){
-                    setStatus('Failed to fetch tests: ' + e.message);
-                    tbody.innerHTML = "<tr><td colspan='4' class='muted'>Could not load tests</td></tr>";
-                }
+                    const data = await fetchJSON(`${API}/api/tests`);
+                    const tbody = document.getElementById('tbody');
+                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No tests yet.</td></tr>"; setStatus('No tests.'); return; }
+                    tbody.innerHTML = data.map(r => `
+                        <tr>
+                            <td>${r.title || '-'}</td>
+                            <td><span class='pill'>${r.difficulty || '-'}</span></td>
+                            <td>${Array.isArray(r.tags) ? r.tags.join(', ') : '-'}</td>
+                            <td class='muted'>${r.id || '-'}</td>
+                        </tr>`).join('');
+                    setStatus(`Fetched ${data.length} test(s).`);
+                }catch(e){ setStatus('Failed to fetch tests: ' + e.message); }
             }
 
-            function renderRows(rows){
-                if(!rows.length){
-                    tbody.innerHTML = "<tr><td colspan='4' class='muted'>No tests yet — create one above.</td></tr>";
-                    return;
+            function renderCreate(){
+                view.innerHTML = `
+                    <div class='grid'>
+                        <div>
+                            <h2 style='margin:6px 0'>Create Test</h2>
+                            <label>Title</label>
+                            <input id='title' placeholder='e.g., Frontend Basics' />
+                            <label style='margin-top:10px'>Difficulty</label>
+                            <select id='difficulty'>
+                                <option value='easy'>easy</option>
+                                <option value='medium'>medium</option>
+                                <option value='hard'>hard</option>
+                            </select>
+                            <label style='margin-top:10px'>Tags (comma separated)</label>
+                            <input id='tags' placeholder='react, js, css' />
+                            <label style='margin-top:10px'>Description</label>
+                            <textarea id='desc' placeholder='Short description'></textarea>
+                            <div style='margin-top:12px'><button id='createBtn'>Create Test</button></div>
+                        </div>
+                        <div>
+                            <h3 style='margin:6px 0'>Preview</h3>
+                            <pre id='preview'></pre>
+                        </div>
+                    </div>`;
+                const updatePreview = () => {
+                    const payload = buildTestPayload();
+                    document.getElementById('preview').textContent = JSON.stringify(payload, null, 2);
                 }
-                tbody.innerHTML = rows.map(r => `
-                    <tr>
-                        <td>${r.title || '-'}</td>
-                        <td><span class='pill'>${r.difficulty || '-'}</span></td>
-                        <td>${Array.isArray(r.tags) ? r.tags.join(', ') : '-'}</td>
-                        <td class='muted'>${r.id || r._id || '-'}</td>
-                    </tr>
-                `).join('');
+                ['title','difficulty','tags','desc'].forEach(id=>{
+                    const el = document.getElementById(id);
+                    el.addEventListener('input', updatePreview);
+                    el.addEventListener('change', updatePreview);
+                })
+                document.getElementById('createBtn').addEventListener('click', createTest);
+                updatePreview();
             }
-
-            async function createTest(){
+            function buildTestPayload(){
                 const title = document.getElementById('title').value.trim();
                 const difficulty = document.getElementById('difficulty').value.trim() || 'easy';
                 const tags = document.getElementById('tags').value.split(',').map(s => s.trim()).filter(Boolean);
                 const description = document.getElementById('desc').value.trim();
-
-                if(!title){
-                    setStatus('Please enter a title.');
-                    return;
-                }
-
-                const payload = {
-                    title,
-                    description,
-                    difficulty,
-                    tags,
-                    questions: [],
-                    created_by: 'demo@flames.assess',
-                };
+                return { title, description, difficulty, tags, questions: [], created_by: 'demo@flames.assess' };
+            }
+            async function createTest(){
+                const payload = buildTestPayload();
+                if(!payload.title){ setStatus('Please enter a title.'); return; }
                 try{
                     setStatus('Creating test…');
-                    const res = await fetch('/api/tests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-                    const data = await res.json();
-                    if(res.ok){
-                        setStatus('Created test ' + (data.id || '')); 
-                        document.getElementById('title').value = '';
-                        document.getElementById('difficulty').value = '';
-                        document.getElementById('tags').value = '';
-                        document.getElementById('desc').value = '';
-                        fetchTests();
-                    }else{
-                        setStatus('Error: ' + (data.detail || JSON.stringify(data)));
-                    }
-                }catch(e){
-                    setStatus('Failed to create test: ' + e.message);
-                }
+                    const data = await fetchJSON(`${API}/api/tests`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+                    setStatus('Created test ' + (data.id || '')); 
+                    route('tests');
+                }catch(e){ setStatus('Failed to create test: ' + e.message); }
             }
 
-            document.getElementById('createBtn').addEventListener('click', createTest);
-            fetchTests();
+            function renderTake(){
+                view.innerHTML = `
+                    <div>
+                        <h2 style='margin:6px 0'>Take Test</h2>
+                        <div class='row'>
+                            <div>
+                                <label>Test ID</label>
+                                <input id='take_test_id' placeholder='Paste test id' />
+                            </div>
+                            <div>
+                                <label>Your Email</label>
+                                <input id='take_email' placeholder='you@example.com' />
+                            </div>
+                            <div style='align-self:flex-end'>
+                                <button id='startBtn'>Start Attempt</button>
+                            </div>
+                        </div>
+                        <div id='attemptBox' style='margin-top:16px; display:none'>
+                            <div class='row'>
+                                <div style='flex:1'>
+                                    <label>Language</label>
+                                    <select id='lang'>
+                                        <option>python</option>
+                                        <option>javascript</option>
+                                        <option>cpp</option>
+                                    </select>
+                                    <label style='margin-top:10px'>Code</label>
+                                    <textarea id='code' placeholder='Write your solution here…' style='width:100%; height:200px'></textarea>
+                                </div>
+                                <div style='width:340px'>
+                                    <label>Notes</label>
+                                    <textarea id='notes' placeholder='Optional notes for reviewers' style='width:100%; height:120px'></textarea>
+                                    <div style='margin-top:12px'><button id='submitBtn'>Submit Solution</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                document.getElementById('startBtn').addEventListener('click', startAttempt);
+            }
+            let currentAttempt = null;
+            async function startAttempt(){
+                const test_id = document.getElementById('take_test_id').value.trim();
+                const user_email = document.getElementById('take_email').value.trim();
+                if(!test_id || !user_email){ setStatus('Enter test id and email'); return }
+                try{
+                    setStatus('Starting attempt…');
+                    const payload = { test_id, user_email, status: 'started' };
+                    const data = await fetchJSON(`${API}/api/attempts`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+                    currentAttempt = data.id;
+                    document.getElementById('attemptBox').style.display = 'block';
+                    setStatus('Attempt started: ' + currentAttempt);
+                }catch(e){ setStatus('Failed to start attempt: ' + e.message); }
+            }
+            async function submitSolution(){
+                if(!currentAttempt){ setStatus('Start an attempt first'); return }
+                const body = {
+                    attempt_id: currentAttempt,
+                    language: document.getElementById('lang').value,
+                    code: document.getElementById('code').value,
+                    notes: document.getElementById('notes').value,
+                };
+                try{
+                    setStatus('Submitting…');
+                    const data = await fetchJSON(`${API}/api/submissions`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+                    setStatus('Submission saved: ' + (data.id || ''));
+                    document.getElementById('code').value = '';
+                    document.getElementById('notes').value = '';
+                }catch(e){ setStatus('Failed to submit: ' + e.message) }
+            }
+            function wireSubmit(){
+                const btn = document.getElementById('submitBtn');
+                if(btn) btn.addEventListener('click', submitSolution);
+            }
+            const observer = new MutationObserver(wireSubmit);
+            observer.observe(document.body, { childList:true, subtree:true });
+
+            function renderAttempts(){
+                view.innerHTML = `
+                    <div>
+                        <div class='row' style='justify-content:space-between; align-items:center'>
+                            <h2 style='margin:6px 0'>Attempts</h2>
+                            <div>
+                                <input id='filter_email' placeholder='Filter by email' style='width:220px' />
+                                <button id='filterBtn'>Filter</button>
+                            </div>
+                        </div>
+                        <table>
+                            <thead><tr><th>Attempt ID</th><th>Test</th><th>User</th><th>Status</th></tr></thead>
+                            <tbody id='tbodyA'><tr><td colspan='4' class='muted'>Loading…</td></tr></tbody>
+                        </table>
+                    </div>`;
+                document.getElementById('filterBtn').addEventListener('click', loadAttempts);
+                loadAttempts();
+            }
+            async function loadAttempts(){
+                try{
+                    const email = (document.getElementById('filter_email')?.value || '').trim();
+                    const url = email ? `${API}/api/attempts?user_email=${encodeURIComponent(email)}` : `${API}/api/attempts`;
+                    setStatus('Fetching attempts…');
+                    const data = await fetchJSON(url);
+                    const tbody = document.getElementById('tbodyA');
+                    if(!data.length){ tbody.innerHTML = "<tr><td colspan='4' class='muted'>No attempts yet.</td></tr>"; setStatus('No attempts.'); return; }
+                    tbody.innerHTML = data.map(r => `
+                        <tr>
+                            <td class='muted'>${r.id || '-'}</td>
+                            <td>${r.test_id || '-'}</td>
+                            <td>${r.user_email || '-'}</td>
+                            <td><span class='pill'>${r.status || '-'}</span></td>
+                        </tr>`).join('');
+                    setStatus(`Fetched ${data.length} attempt(s).`);
+                }catch(e){ setStatus('Failed to fetch attempts: ' + e.message); }
+            }
+
+            // Default route
+            route('tests');
         </script>
     </body>
     </html>
