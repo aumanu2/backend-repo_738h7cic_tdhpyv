@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 from database import db, create_document, get_documents
 from schemas import Test as TestSchema, Attempt as AttemptSchema, Submission as SubmissionSchema
 
-app = FastAPI(title="CodeAssess API", version="0.1.3")
+app = FastAPI(title="CodeAssess API", version="0.1.4")
 
 app.add_middleware(
     CORSMiddleware,
@@ -168,7 +168,7 @@ def get_schema():
     }
 
 
-# Landing Page — redesigned with a modern, Gen‑Z vibe
+# Landing Page — hyper‑polished Gen‑Z aesthetic with motion, particles, and magnetic CTAs
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page():
     return """
@@ -182,46 +182,79 @@ def landing_page():
         <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
         <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap' rel='stylesheet'>
         <style>
-          :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --ink:#0b0b10; --brand:#7c3aed; --brand2:#06b6d4; --brand3:#22d3ee; --panel: rgba(255,255,255,.04); --border: rgba(148,163,184,.16); }
+          :root {
+            --bg:#07070b; --fg:#e5e7eb; --muted:#94a3b8; --ink:#0b0b10;
+            --brand:#a855f7; --brand2:#22d3ee; --brand3:#f472b6; --brand4:#60a5fa;
+            --panel: rgba(255,255,255,.04); --panel2: rgba(255,255,255,.06); --border: rgba(148,163,184,.18);
+          }
           * { box-sizing: border-box }
           html, body { height: 100% }
-          body { margin:0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--fg); background: radial-gradient(1200px 600px at 20% -10%, rgba(124,58,237,0.28), transparent), radial-gradient(1000px 500px at 120% 20%, rgba(6,182,212,0.24), transparent), var(--bg); }
-          .container { max-width: 1200px; margin: 0 auto; padding: 24px }
-          header { position: sticky; top: 0; backdrop-filter: saturate(1.2) blur(8px); background: linear-gradient(180deg, rgba(11,11,16,.72), rgba(11,11,16,.15)); border-bottom:1px solid var(--border); z-index: 20 }
+          body {
+            margin:0; color:var(--fg);
+            font-family:'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            background: radial-gradient(1200px 700px at 15% -10%, rgba(168,85,247,.25), transparent),
+                        radial-gradient(1000px 600px at 115% 10%, rgba(34,211,238,.22), transparent),
+                        linear-gradient(180deg, #07070b, #0b0b14);
+            overflow-x: hidden;
+          }
+          .container { max-width:1200px; margin:0 auto; padding: 24px }
+          header { position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(1.2) blur(10px);
+            background: linear-gradient(180deg, rgba(7,7,11,.75), rgba(7,7,11,.2)); border-bottom:1px solid var(--border) }
           .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 12px 0 }
-          .logo { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px }
-          .logo-badge{ width:36px;height:36px;border-radius:12px;background: conic-gradient(from 210deg at 50% 50%, var(--brand), var(--brand2), var(--brand3), var(--brand)); display:grid; place-items:center; color:white; font-weight:900; border:1px solid rgba(255,255,255,.25); box-shadow: 0 8px 30px rgba(124,58,237,.25) }
+          .logo { display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.3px }
+          .logo-badge{ width:36px;height:36px;border-radius:12px;
+            background: conic-gradient(from 210deg at 50% 50%, var(--brand), var(--brand2), var(--brand3), var(--brand4), var(--brand));
+            display:grid; place-items:center; color:white; font-weight:900; border:1px solid rgba(255,255,255,.25);
+            box-shadow: 0 8px 30px rgba(168,85,247,.25)
+          }
           nav { display:flex; gap: 18px; color: var(--muted) }
-          nav a { text-decoration:none; color: inherit; padding: 8px 10px; border-radius: 10px }
+          nav a { text-decoration:none; color: inherit; padding: 8px 10px; border-radius: 10px; transition: .25s ease }
           nav a:hover { background: rgba(255,255,255,.06); color: #fff }
-          .hero{ display:grid; grid-template-columns: 1.05fr .95fr; gap: 36px; align-items:center; padding: 56px 0 }
-          h1 { font-size: clamp(40px, 6.5vw, 70px); line-height:1.02; margin: 0 0 14px; letter-spacing:-.02em }
-          .gradient { background: linear-gradient(135deg, #fff, #e9d5ff 35%, #99f6e4 80%); -webkit-background-clip: text; background-clip:text; color: transparent; text-shadow: 0 12px 40px rgba(153,246,228,.12) }
-          .kicker { color: var(--muted); font-weight:700; letter-spacing:.22em; text-transform:uppercase; font-size:11px }
+
+          .hero{ position:relative; display:grid; grid-template-columns: 1.05fr .95fr; gap: 36px; align-items:center; padding: 64px 0 40px }
+          .kicker{ color: var(--muted); font-weight:800; letter-spacing:.22em; text-transform:uppercase; font-size:11px }
+          h1 { font-size: clamp(44px, 6.8vw, 80px); line-height:1.02; margin: 0 0 14px; letter-spacing:-.02em }
+          .gradient { background: linear-gradient(135deg, #fff, #e9d5ff 30%, #99f6e4 70%, #bfdbfe 100%); -webkit-background-clip: text; background-clip:text; color: transparent; text-shadow: 0 12px 40px rgba(153,246,228,.12) }
           .subtitle{ color: var(--muted); max-width: 60ch; font-size: 18px }
-          .cta{ display:flex; gap:12px; margin-top:24px; flex-wrap: wrap }
-          .btn{ padding:12px 16px; border-radius:12px; border:1px solid rgba(148,163,184,.2); color:var(--ink); background:white; font-weight:800; box-shadow: 0 10px 24px rgba(124,58,237,.18) }
+
+          .cta{ display:flex; gap:14px; margin-top:26px; flex-wrap: wrap }
+          .btn{ position:relative; overflow:hidden; padding:12px 18px; border-radius:14px; border:1px solid rgba(148,163,184,.2);
+            color:var(--ink); background:white; font-weight:900; box-shadow: 0 10px 24px rgba(168,85,247,.18); cursor:pointer; transition: transform .2s ease }
+          .btn:hover{ transform: translateY(-2px) }
           .btn.sec{ background: transparent; color: var(--fg); border-color: rgba(148,163,184,.28) }
-          .btn:hover{ transform: translateY(-1px); transition: .2s ease; }
-          .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; background: rgba(124,58,237,.12); color:#e9d5ff; border: 1px solid rgba(124,58,237,.25); border-radius:999px; font-size:12px; font-weight:800 }
+          .btn .shine{ position:absolute; inset:-100% auto auto -100%; width:200%; height:200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 40%);
+            transform: translate(var(--mx,0), var(--my,0)); transition: transform .06s linear; pointer-events:none }
+
+          .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; background: rgba(168,85,247,.12); color:#e9d5ff; border: 1px solid rgba(168,85,247,.25); border-radius:999px; font-size:12px; font-weight:800 }
+
           .cardgrid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin: 48px 0 0 }
-          .card{ padding:20px; border:1px solid var(--border); border-radius:16px; background: var(--panel); transition: .2s ease; min-height: 120px }
-          .card:hover{ transform: translateY(-3px); background: linear-gradient(180deg, rgba(124,58,237,.10), rgba(255,255,255,.02)); box-shadow: 0 12px 30px rgba(124,58,237,.18) }
+          .card{ padding:20px; border:1px solid var(--border); border-radius:16px; background: var(--panel); transition: .3s ease; min-height: 128px; position:relative; overflow:hidden }
+          .card::after{ content:""; position:absolute; inset: -40% auto auto -40%; width:80%; height:80%; background: radial-gradient(circle, rgba(168,85,247,.15), transparent 60%); filter: blur(30px); transition: .3s ease; }
+          .card:hover{ transform: translateY(-4px); background: linear-gradient(180deg, rgba(168,85,247,.10), rgba(255,255,255,.02)); box-shadow: 0 12px 30px rgba(168,85,247,.18) }
           .card h3{ margin:0 0 6px; font-size:18px }
           .card p{ margin:0; color: var(--muted) }
-          .split { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px }
-          .stat { padding: 16px; border:1px solid var(--border); border-radius: 16px; background: var(--panel); text-align:center }
-          .stat .num { font-size: 28px; font-weight: 900; letter-spacing: -.02em }
-          footer{ padding: 48px 0; color: var(--muted); font-size:14px }
+
+          .split { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px }
+          .stat { padding: 18px; border:1px solid var(--border); border-radius: 16px; background: var(--panel); text-align:center }
+          .stat .num { font-size: 30px; font-weight: 900; letter-spacing: -.02em }
+
+          footer{ padding: 56px 0 40px; color: var(--muted); font-size:14px }
           @media (max-width: 980px){ .hero{ grid-template-columns: 1fr } .cardgrid{ grid-template-columns: 1fr } .split{ grid-template-columns: 1fr } }
-          .glow{ position: fixed; inset: -10% -10% auto auto; width: 50vw; height: 50vw; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
-          .glow2{ position: fixed; inset: auto auto -20% -20%; width: 45vw; height: 45vw; background: radial-gradient(circle at 70% 70%, rgba(6,182,212,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
+
+          /* Particles layer */
+          #bgCanvas{ position: fixed; inset:0; z-index: -1; }
+          .glow{ position: fixed; inset: -10% -10% auto auto; width: 50vw; height: 50vw; background: radial-gradient(circle at 30% 30%, rgba(168,85,247,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
+          .glow2{ position: fixed; inset: auto auto -20% -20%; width: 45vw; height: 45vw; background: radial-gradient(circle at 70% 70%, rgba(34,211,238,.35), transparent 60%); filter: blur(50px); pointer-events:none; }
+          .fade-in{ opacity:0; transform: translateY(12px); animation: enter .6s ease forwards }
+          @keyframes enter{ to { opacity:1; transform:none } }
         </style>
       </head>
       <body>
+        <canvas id="bgCanvas"></canvas>
         <div class="glow"></div>
         <div class="glow2"></div>
-        <header>
+        <header class="fade-in" style="animation-delay:.05s">
           <div class="container nav">
             <div class="logo">
               <div class="logo-badge">FA</div>
@@ -229,7 +262,7 @@ def landing_page():
             </div>
             <nav>
               <a href="#features">Features</a>
-              <a href="/app">Try the App</a>
+              <a href="/app" data-transition>Try the App</a>
               <a href="#pricing">Pricing</a>
               <a href="#contact">Contact</a>
             </nav>
@@ -237,7 +270,7 @@ def landing_page():
         </header>
 
         <div class="container">
-          <section class="hero">
+          <section class="hero fade-in" style="animation-delay:.1s">
             <div>
               <div class="kicker">Gen‑Z ready</div>
               <h1>
@@ -246,11 +279,14 @@ def landing_page():
               </h1>
               <p class="subtitle">Create beautiful, robust coding tests in minutes. Invite candidates, proctor securely, and get AI‑assisted insights that actually help you decide faster.</p>
               <div class="cta">
-                <a class="btn" href="/app">Launch App</a>
-                <a class="btn sec" href="/health">Check API Health</a>
-                <a class="btn sec" href="/schema">View Schema</a>
+                <a class="btn magnet" href="/app" data-transition>
+                  <span>Launch App</span>
+                  <span class="shine"></span>
+                </a>
+                <a class="btn sec magnet" href="/health"><span>Check API Health</span><span class="shine"></span></a>
+                <a class="btn sec magnet" href="/schema"><span>View Schema</span><span class="shine"></span></a>
               </div>
-              <div style="margin-top:14px" class="badge">Live preview powered by FastAPI</div>
+              <div style="margin-top:14px" class="badge">Live preview powered by FastAPI • v0.1.4</div>
             </div>
             <div>
               <div class="cardgrid">
@@ -264,30 +300,87 @@ def landing_page():
             </div>
           </section>
 
-          <section id="features" class="split">
+          <section id="features" class="split fade-in" style="animation-delay:.15s">
             <div class="stat"><div class="num">10x</div><div class="muted">faster to create tests</div></div>
             <div class="stat"><div class="num">98%</div><div class="muted">cheating attempts flagged</div></div>
           </section>
 
-          <section id="contact" style="margin-top: 32px">
+          <section id="contact" class="fade-in" style="animation-delay:.2s; margin-top: 32px">
             <div class="card" style="padding: 18px">
               <h3 style="margin:0 0 8px">Need something custom?</h3>
               <p class="muted" style="margin:0 0 12px">We ship custom question types, proctoring rules, and integrations.</p>
-              <a class="btn" href="mailto:hello@flames.assess">Contact Us</a>
+              <a class="btn magnet" href="mailto:hello@flames.assess"><span>Contact Us</span><span class=shine></span></a>
             </div>
           </section>
 
-          <footer>
+          <footer class="fade-in" style="animation-delay:.25s">
             © <span id="yr"></span> Flames Assess — All rights reserved.
           </footer>
         </div>
-        <script>document.getElementById('yr').textContent = new Date().getFullYear()</script>
+        <script>
+          // Year stamp
+          document.getElementById('yr').textContent = new Date().getFullYear()
+
+          // Magnetic button + shine
+          document.querySelectorAll('.magnet').forEach(btn=>{
+            btn.addEventListener('mousemove', (e)=>{
+              const r = btn.getBoundingClientRect();
+              const x = e.clientX - r.left; const y = e.clientY - r.top;
+              const mx = (x - r.width/2) * 0.08; const my = (y - r.height/2) * 0.08;
+              btn.style.transform = `translate(${mx}px, ${my}px)`;
+              const s = btn.querySelector('.shine');
+              if(s){ s.style.setProperty('--mx', (mx*6)+'px'); s.style.setProperty('--my', (my*6)+'px'); }
+            })
+            btn.addEventListener('mouseleave', ()=>{ btn.style.transform = '' })
+          })
+
+          // Subtle page transition for links with [data-transition]
+          const enableTransition = (a)=>{
+            a.addEventListener('click', (e)=>{
+              if(a.target === '_blank') return;
+              e.preventDefault();
+              document.body.style.transition = 'opacity .25s ease';
+              document.body.style.opacity = '0';
+              setTimeout(()=> window.location.href = a.getAttribute('href'), 180)
+            })
+          }
+          document.querySelectorAll('[data-transition]').forEach(enableTransition)
+
+          // Lightweight particles on canvas
+          const c = document.getElementById('bgCanvas');
+          const ctx = c.getContext('2d');
+          let w, h, dpr = window.devicePixelRatio || 1; let dots=[];
+          function resize(){
+            w = c.width = innerWidth * dpr; h = c.height = innerHeight * dpr; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px'
+          }
+          window.addEventListener('resize', resize); resize();
+          for(let i=0;i<80;i++){
+            dots.push({
+              x: Math.random()*w, y: Math.random()*h,
+              vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25,
+              r: (Math.random()*2 + 0.6) * dpr,
+              c: [ '#a855f7', '#22d3ee', '#f472b6', '#60a5fa' ][ (Math.random()*4)|0 ]
+            })
+          }
+          function tick(){
+            ctx.clearRect(0,0,w,h)
+            for(const p of dots){
+              p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w) p.vx*=-1; if(p.y<0||p.y>h) p.vy*=-1;
+              ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+              const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*3);
+              g.addColorStop(0, p.c + 'cc'); g.addColorStop(1, '#0000');
+              ctx.fillStyle = g; ctx.fill()
+            }
+            requestAnimationFrame(tick)
+          }
+          tick()
+        </script>
       </body>
     </html>
     """
 
 
-# Rich in-backend SPA — redesigned UI, same endpoints
+# Rich in-backend SPA — upgraded polish, transitions, and loaders
 @app.get("/app", response_class=HTMLResponse)
 def mini_app():
     return """
@@ -301,28 +394,30 @@ def mini_app():
         <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
         <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap' rel='stylesheet'>
         <style>
-            :root { --bg: #0b0b10; --fg: #e2e8f0; --muted:#94a3b8; --brand:#7c3aed; --brand2:#06b6d4; --panel: rgba(255,255,255,.03); --panel2: rgba(255,255,255,.05); --border: rgba(148,163,184,.2) }
+            :root { --bg:#07070b; --fg:#e5e7eb; --muted:#94a3b8; --brand:#a855f7; --brand2:#22d3ee; --panel: rgba(255,255,255,.03); --panel2: rgba(255,255,255,.05); --border: rgba(148,163,184,.2) }
             * { box-sizing: border-box }
-            body { margin:0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--fg); background: radial-gradient(1100px 520px at -20% -20%, rgba(124,58,237,.26), transparent), radial-gradient(1100px 520px at 120% 0%, rgba(6,182,212,.22), transparent), var(--bg); }
-            .shell { display:grid; grid-template-columns: 240px 1fr; min-height: 100vh }
+            body { margin:0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--fg); background: radial-gradient(1100px 520px at -20% -20%, rgba(168,85,247,.26), transparent), radial-gradient(1100px 520px at 120% 0%, rgba(34,211,238,.22), transparent), var(--bg); }
+            .shell { display:grid; grid-template-columns: 260px 1fr; min-height: 100vh }
             aside { border-right:1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.03)); padding: 16px; position: sticky; top:0; height: 100vh }
             .brand { display:flex; gap:10px; align-items:center; font-weight:900; letter-spacing:.2px; margin-bottom: 10px }
-            .badge { width:30px; height:30px; border-radius:10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; font-size:12px; box-shadow: 0 10px 20px rgba(124,58,237,.25) }
+            .badge { width:30px; height:30px; border-radius:10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); display:grid; place-items:center; font-size:12px; box-shadow: 0 10px 20px rgba(168,85,247,.25) }
             .nav { display:flex; flex-direction: column; gap: 8px; margin-top: 8px }
-            .nav button { text-align:left; width: 100%; padding: 10px 12px; border-radius: 10px; border:1px solid var(--border); background: var(--panel); color: var(--fg); font-weight: 700; cursor: pointer }
-            .nav button.active { background: linear-gradient(180deg, rgba(124,58,237,.18), transparent); border-color: rgba(124,58,237,.35) }
-            main { padding: 22px }
+            .nav button, .nav a { text-align:left; width: 100%; padding: 10px 12px; border-radius: 10px; border:1px solid var(--border); background: var(--panel); color: var(--fg); font-weight: 700; cursor: pointer; text-decoration:none }
+            .nav .active { background: linear-gradient(180deg, rgba(168,85,247,.18), transparent); border-color: rgba(168,85,247,.35) }
+            main { padding: 22px; animation: fade .35s ease }
+            @keyframes fade{ from{opacity:0; transform: translateY(8px)} to{opacity:1; transform:none} }
             .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px }
             .panel { border:1px solid var(--border); border-radius: 14px; padding: 16px; background: var(--panel) }
             .row { display:flex; gap: 16px; align-items:flex-start; flex-wrap: wrap }
             input, textarea, select { background: rgba(255,255,255,.06); border:1px solid var(--border); color: var(--fg); border-radius: 10px; padding: 10px 12px; width: 280px }
-            textarea { width: 480px; height: 140px }
+            textarea { width: 520px; height: 160px }
             label { display:block; font-size:12px; color: var(--muted); margin: 0 0 6px }
-            button.btn { padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: white; border: none; font-weight: 800; cursor: pointer }
+            button.btn { padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: white; border: none; font-weight: 800; cursor: pointer; transition:.2s ease transform }
+            button.btn:hover{ transform: translateY(-2px) }
             table { width: 100%; border-collapse: collapse; margin-top: 12px }
             th, td { border-bottom: 1px solid var(--border); text-align:left; padding: 10px; vertical-align: top }
             .muted { color: var(--muted) }
-            .pill { display:inline-block; padding: 3px 8px; font-size: 12px; border-radius: 999px; background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+            .pill { display:inline-block; padding: 3px 8px; font-size: 12px; border-radius: 999px; background: rgba(168,85,247,.15); border:1px solid rgba(168,85,247,.35) }
             a { color: #99f6e4; text-decoration: none }
             code, pre { background: rgba(255,255,255,.06); border:1px solid var(--border); border-radius: 8px; padding: 8px; display:block; white-space: pre-wrap; }
             .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px }
@@ -341,7 +436,7 @@ def mini_app():
                     <button class='nav-btn' data-tab='create'>Create Test</button>
                     <button class='nav-btn' data-tab='take'>Take Test</button>
                     <button class='nav-btn' data-tab='attempts'>Attempts</button>
-                    <a class='nav-btn' href='/landing' style='text-decoration:none; display:block; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--panel); margin-top:8px'>← Back to Landing</a>
+                    <a class='nav-btn' href='/landing'>← Back to Landing</a>
                 </div>
             </aside>
             <main>
@@ -366,7 +461,7 @@ def mini_app():
                 toast.textContent = msg;
                 toast.style.display = 'block';
                 clearTimeout(window.__t);
-                window.__t = setTimeout(()=> toast.style.display = 'none', 2000);
+                window.__t = setTimeout(()=> toast.style.display = 'none', 2200);
             }
 
             function route(tab){
